@@ -28,7 +28,8 @@ class LoginControllerFeatureTest extends FeatureTestCase
             'password' => $this->faker->password,
         ]);
 
-        $response->assertStatus(StatusCodeEnum::HttpUnauthorized->value);
+        $response->assertStatus(StatusCodeEnum::HttpBadRequest->value);
         $response->assertJsonStructure(['status', 'data']);
+        $this->assertEquals('Credenciais inválidas', $response->json('data'));
     }
 }
