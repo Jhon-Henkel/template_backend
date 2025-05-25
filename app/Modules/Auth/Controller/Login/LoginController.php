@@ -30,6 +30,6 @@ class LoginController extends Controller
         if ($result == 'invalid_credentials') {
             return ResponseApi::renderUnauthorized();
         }
-        return ResponseApi::renderOk(['token' => $result]);
+        return ResponseApi::renderOk($result);
     }
 }
