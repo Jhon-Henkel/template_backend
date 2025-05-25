@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\User\User;
+use App\Modules\Auth\UseCase\Login\LoginUseCase;
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
@@ -48,9 +49,8 @@ abstract class FeatureTestCase extends TestCase
     protected function getAuthToken(): string
     {
         if (empty($this->token)) {
-            // $useCase = new LoginUseCase();
-            // $this->token = $useCase->execute($this->userEmail, $this->userPassword);
-            throw new \Exception('Login module not created');
+            $useCase = new LoginUseCase();
+            $this->token = $useCase->execute($this->userEmail, $this->userPassword)['token'];
         }
         return $this->token;
     }
