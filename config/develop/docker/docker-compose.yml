@@ -1,0 +1,46 @@
+services:
+  cf_backend:
+    container_name: "cf_backend"
+    user: admin
+    build:
+      context: .
+      dockerfile: ./config/develop/docker/Dockerfile
+    ports:
+      - "8080:80"
+      - "443:443"
+    networks:
+      cf_network:
+        ipv4_address: 192.168.154.60
+    entrypoint: dockerize -wait tcp://cf_db:5432 -timeout 60s apache2-foreground
+    volumes:
+      - .:/var/www/html
+    tty: true
+    stdin_open: true
+    depends_on:
+      - cf_database
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  cf_database:
+    image: postgres
+    container_name: "cf_db"
+    ports:
+      - "9090:5432"
+    networks:
+      cf_network:
+        ipv4_address: 192.168.154.61
+    volumes:
+      - ./.docker/database:/var/lib/postgresql
+      - ./config/develop/initdb:/docker-entrypoint-initdb.d
+    working_dir: /var/lib/postgresql
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+
+networks:
+  cf_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.154.0/24

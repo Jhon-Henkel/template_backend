@@ -1,0 +1,17 @@
+includes:
+    - ../../../vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - ../../../app/
+
+    level: 5
+    checkClassCaseSensitivity: true
+
+    ignoreErrors:
+
+services:
+    -
+        class: App\Infra\Rules\NoPrivateMethodsRule
+        tags:
+            - phpstan.rules.rule
